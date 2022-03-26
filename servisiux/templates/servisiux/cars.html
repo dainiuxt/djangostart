@@ -1,0 +1,22 @@
+{% extends "servisiux/base.html" %}
+
+{% block content %}
+<section class="resume-section" id="skills">
+  <div class="resume-section-content">
+    <h2 class="mb-5">All cars serviced</h2>
+    <div class="subheading mb-3">Our stats</div>
+    {% if cars %}
+    <ul class="fa-ul mb-0">
+      {% for car in cars %}
+        <li>
+          <span class="fa-li"><i class="fas fa-check"></i></span>
+            <a href="{{ car.id }}">{{ car.model_id }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p>No service provided.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

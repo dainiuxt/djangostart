@@ -1,20 +1,13 @@
-from operator import mod
 from django.db import models
-from django.urls import reverse
 
 # Create your models here.
-
-'''
-Sukurti visus modelius pagal nurodytą programos DB struktūrą
-Sukurti meniu punktus visiems sukurtiems modeliams
-'''
 
 class CarModel(models.Model):
   make = models.CharField('Make', max_length=200)
   model = models.CharField('Model', max_length=200)
 
   def __str__(self):
-      return (f"{self.make}, {self.model}")
+      return (f"{self.make} {self.model}")
 
   class Meta:
       verbose_name = 'Model'
@@ -28,7 +21,7 @@ class Car(models.Model):
   owner = models.CharField('Owner name, surname', max_length=200)
 
   def __str__(self):
-      return self.plate  
+      return f'{self.plate}'
 
   class Meta:
       verbose_name = 'Car'
@@ -36,25 +29,44 @@ class Car(models.Model):
 
 
 class Order(models.Model):
-  date = models.CharField('Date', max_length=200)
+  date = models.DateField('Date', null=True, blank=True)
   car_instance_id = models.ForeignKey('Car', on_delete=models.SET_NULL, null=True)
+#   link = models.CharField('link', max_length=50, default='Open order')
 
   def __str__(self):
-      return self.car_instance_id
+      return f'{self.car_instance_id}'
 
   class Meta:
       verbose_name = 'Order'
       verbose_name_plural = 'Orders'
 
+  def save(self, *args, **kwargs):
+      self.link = f'Open order'
+      super().save(*args, **kwargs)
+
+  ORDER_STATUS = (
+    ('e', 'Entered'),
+    ('w', 'Waiting'),
+    ('p', 'In progress'),
+    ('c', 'Completed'),
+    )
+
+  status = models.CharField(
+    max_length=1,
+    choices=ORDER_STATUS,
+    blank=True,
+    default='e',
+    help_text='Status',
+    )
 
 class OrderRow(models.Model):
   service_id = models.ForeignKey('Service', on_delete=models.SET_NULL, null=True)
-  order_id = models.ForeignKey('Order', on_delete=models.SET_NULL, null=True)
+  order = models.ForeignKey('Order', on_delete=models.SET_NULL, null=True)
   quantity = models.IntegerField('Quantity')
   # price = models.ManyToManyField('Service', max_length=200)
 
   def __str__(self):
-      return self.order_id
+      return f'{self.order_id}'
 
   class Meta:
       verbose_name = 'Row'
@@ -66,7 +78,7 @@ class Service(models.Model):
   price = models.FloatField('Price', max_length=200)
 
   def __str__(self):
-      return self.service
+      return f'{self.service}'
 
   class Meta:
       verbose_name = 'Service'

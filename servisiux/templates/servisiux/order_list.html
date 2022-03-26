@@ -1,0 +1,22 @@
+{% extends "servisiux/base.html" %}
+
+{% block content %}
+<section class="resume-section" id="skills">
+  <div class="resume-section-content">
+    <h2 class="mb-5">All orders</h2>
+    <div class="subheading mb-3">Our stats</div>
+    {% if order_list %}
+    <ul class="fa-ul mb-0">
+      {% for order in order_list %}
+        <li>
+          <span class="fa-li"><i class="fas fa-check"></i></span>
+            <a href="{{ order.id }}">{{ order.date }}, {{ order.car_instance_id }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p>No orders in system.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

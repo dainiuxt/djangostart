@@ -1,0 +1,20 @@
+{% extends "servisiux/base.html" %}
+
+{% block content %}
+<section class="resume-section" id="skills">
+  <div class="resume-section-content">
+    <h2 class="mb-5">{{order.car_instance_id}}</h2>
+    <div class="subheading mb-3">Order date: {{ order.date }}</div>
+    <div class="subheading mb-3">Status: {{ order.get_status_display }}</div>
+  </div>
+
+  {% for row in order.orderrow_set.all %}
+    {{ row.order }} {{ row.quantity}}
+    {% for entry in service_id.service_set.all %}
+      {{entry.service}}
+    {% endfor %}
+
+    {% endfor %}
+
+</section>
+{% endblock %}

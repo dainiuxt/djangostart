@@ -1,0 +1,12 @@
+{% extends "servisiux/base.html" %}
+
+{% block content %}
+<section class="resume-section" id="skills">
+  <div class="resume-section-content">
+    <h2 class="mb-5">{{car.model_id}}</h2>
+    <div class="subheading mb-3">Driver: {{ car.owner }}</div>
+    <div class="subheading mb-3">License plate: {{ car.plate }}</div>
+    <div class="subheading mb-3">VIN: {{ car.vin }}</div>
+  </div>
+</section>
+{% endblock %}
