@@ -8,12 +8,33 @@
     {% if cars %}
     <ul class="fa-ul mb-0">
       {% for car in cars %}
-        <li>
-          <span class="fa-li"><i class="fas fa-check"></i></span>
-            <a href="{{ car.id }}">{{ car.model_id }}</a>
+        <li class="text-center">
+          <img src="{{ car.cover.url }}" class="w-50 img-thumbnail rounded mx-auto d-block">
+          <!-- <span class="fa-li"><i class="fas fa-check"></i></span> -->
+            <a class="text-center" href="{{ car.id }}">{{ car.model_id }}</a>
+          <hr>
         </li>
       {% endfor %}
     </ul>
+    <div>
+      <nav aria-label="...">
+          {% if cars.has_other_pages %}
+              <ul class="pagination pagination-sm justify-content-center">
+                  {% for i in cars.paginator.page_range %}
+                      {% if cars.number == i %}
+                          <li class="page-item active">
+                            <a class="page-link" href">{{ i }}</a>
+                          </li>
+                      {% else %}
+                          <li class="page-item">
+                              <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                          </li>
+                      {% endif %}
+                  {% endfor %}
+              </ul>
+          {% endif %}
+      </nav>
+    </div>
     {% else %}
       <p>No service provided.</p>
     {% endif %}

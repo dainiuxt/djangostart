@@ -16,9 +16,18 @@ class CarModel(models.Model):
 
 class Car(models.Model):
   plate = models.CharField('License plate', max_length=200)
-  model_id = models.ForeignKey('Carmodel', on_delete=models.SET_NULL, null=True)
+  model_id = models.ForeignKey('Carmodel', on_delete=models.SET_NULL, null=True, related_name="carmodel")
   vin = models.CharField('VIN number', max_length=200)
   owner = models.CharField('Owner name, surname', max_length=200)
+  cover = models.ImageField('Carpic', upload_to='service/cars', null=True)
+
+  @property
+  def car_suma(self):
+      orders = Order.objects.filter(car_instance_id=self.id)
+      recipe = 0
+      for row in orders:
+          recipe += row.suma
+      return recipe
 
   def __str__(self):
       return f'{self.plate}'
@@ -30,8 +39,16 @@ class Car(models.Model):
 
 class Order(models.Model):
   date = models.DateField('Date', null=True, blank=True)
-  car_instance_id = models.ForeignKey('Car', on_delete=models.SET_NULL, null=True)
+  car_instance_id = models.ForeignKey('Car', on_delete=models.SET_NULL, null=True, related_name='carorder')
 #   link = models.CharField('link', max_length=50, default='Open order')
+
+  @property
+  def suma(self):
+      order_rows = OrderRow.objects.filter(order_id=self.id)
+      recipe = 0
+      for row in order_rows:
+          recipe += row.quantity * row.service_id.price
+      return recipe
 
   def __str__(self):
       return f'{self.car_instance_id}'
@@ -39,7 +56,7 @@ class Order(models.Model):
   class Meta:
       verbose_name = 'Order'
       verbose_name_plural = 'Orders'
-
+  
   def save(self, *args, **kwargs):
       self.link = f'Open order'
       super().save(*args, **kwargs)
@@ -59,6 +76,7 @@ class Order(models.Model):
     help_text='Status',
     )
 
+
 class OrderRow(models.Model):
   service_id = models.ForeignKey('Service', on_delete=models.SET_NULL, null=True)
   order = models.ForeignKey('Order', on_delete=models.SET_NULL, null=True)
@@ -66,11 +84,15 @@ class OrderRow(models.Model):
   # price = models.ManyToManyField('Service', max_length=200)
 
   def __str__(self):
-      return f'{self.order_id}'
+      return f'{self.order_id}, {self.quantity}'
+
+  # def service_data(service_id):
+  #     return Service.objects.get(service_id)
 
   class Meta:
       verbose_name = 'Row'
       verbose_name_plural = 'Rows'  
+      unique_together = ('service_id', 'order')
 
 
 class Service(models.Model):

@@ -15,6 +15,7 @@ class OrderRowInline(admin.TabularInline):
 class OrderInline(admin.TabularInline):
   model = Order
   list_display = ('date', 'car_instance_id',)
+  list_display_links = ('id',)  
   show_change_link = True
   readonly_fields = ('date',)
   can_delete = False
@@ -30,7 +31,7 @@ class CarModelAdmin(admin.ModelAdmin):
   list_display = ('make', 'model')
 
 class CarAdmin(admin.ModelAdmin):
-  list_display = ('model_id', 'plate', 'vin', 'owner')
+  list_display = ('model_id', 'plate', 'vin', 'owner', 'cover')
   search_fields = ('vin', 'model_id__make')  
   list_filter = ('owner', 'model_id__make')
   inlines = [OrderInline]

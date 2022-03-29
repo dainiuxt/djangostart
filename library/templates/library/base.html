@@ -18,7 +18,11 @@
           <li><a href="{% url 'library/index' %}">Pradžia</a></li>
           <li><a href="{% url 'books' %}">Visos knygos</a></li>
           <li><a href="{% url 'authors' %}">Visi autoriai</a></li>
-
+          <li>
+            <form action="{% url 'library/search' %}" method="get" class="form-inline my-2 my-md-0">
+            <input name="query" class="form-control" type="text" placeholder="Paieška">
+            </form>
+        </li>
         </ul>
      {% endblock %}
       </div>

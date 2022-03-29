@@ -3,18 +3,19 @@
 {% block content %}
 <section class="resume-section" id="skills">
   <div class="resume-section-content">
-    <h2 class="mb-5">{{order.car_instance_id}}</h2>
+    <h2 class="mb-5"><a href="{% url 'car' order.car_instance_id.id %}">{{order.car_instance_id.model_id}}</a></h2>
+    <div class="subheading mb-3">{{ order.car_instance_id }}</div>
     <div class="subheading mb-3">Order date: {{ order.date }}</div>
     <div class="subheading mb-3">Status: {{ order.get_status_display }}</div>
   </div>
-
-  {% for row in order.orderrow_set.all %}
-    {{ row.order }} {{ row.quantity}}
-    {% for entry in service_id.service_set.all %}
-      {{entry.service}}
+  <ul>
+    {% for row in order.orderrow_set.all %}
+    <li>
+        {{ row.quantity }} {{ row.service_id.service }}, {{ row.service_id.price }}
+    </li>
     {% endfor %}
-
-    {% endfor %}
+    <li>Total €: {{ order.suma }}</li>
+  </ul>
 
 </section>
 {% endblock %}

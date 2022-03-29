@@ -10,10 +10,27 @@
       {% for order in order_list %}
         <li>
           <span class="fa-li"><i class="fas fa-check"></i></span>
-            <a href="{{ order.id }}">{{ order.date }}, {{ order.car_instance_id }}</a>
+            Status info: {{ order.date }}, {{ order.car_instance_id }} <a href="{{ order.id }}">{{ order.get_status_display}}</a> 
         </li>
       {% endfor %}
     </ul>
+    <div class="pagination">
+      <span class="step-links">
+          {% if page_obj.has_previous %}
+              <a href="?page=1">&laquo; first</a>
+              <a href="?page={{ page_obj.previous_page_number }}">back</a>
+          {% endif %}
+  
+          <span class="current">
+              {{ page_obj.number }} from {{ page_obj.paginator.num_pages }}
+          </span>
+  
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}">forward</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+      </span>
+  </div>      
     {% else %}
       <p>No orders in system.</p>
     {% endif %}

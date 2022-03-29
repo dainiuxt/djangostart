@@ -16,7 +16,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -138,3 +137,11 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'library/media')
+# MEDIA_URL = '/media/'
+
+MEDIA_URL = "/media/"
+MEDIAFILES_DIRS = [BASE_DIR / "media"]  # new
+MEDIA_ROOT = MEDIA_ROOT = BASE_DIR / "mediafiles"  # new
+MEDIAFILES_STORAGE = "django.contrib.mediafiles.storage.MediaFilesStorage"

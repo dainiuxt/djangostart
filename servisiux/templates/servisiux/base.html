@@ -7,7 +7,7 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
   {% block title %}<title>Car Service</title>{% endblock %}
-  <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}" />
+  <link rel="icon" type="image/x-icon" href="{% static 'img/car.ico' %}" />
   <!-- Font Awesome icons (free version)-->
   <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
   <!-- Google fonts-->
@@ -30,6 +30,11 @@
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{% url 'stats' %}">Stats</a></li>
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{% url 'cars' %}">Cars</a></li>
             <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{% url 'orders' %}">Orders</a></li>
+            <li>
+              <form action="{% url 'servisiux/search' %}" method="get" class="form-inline w-75 mx-auto mt-4">
+              <input name="query" class="form-control" type="text" placeholder="Search">
+              </form>
+          </li>
         </ul>
     </div>
   </nav>

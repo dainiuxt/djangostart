@@ -4,12 +4,12 @@ from .models import Author, Genre, Book, BookInstance
 
 class BooksInstanceInline(admin.TabularInline):
     model = BookInstance
-    readonly_fields = ('id',)
+    # readonly_fields = ('id',)
     can_delete = False
     extra = 0 # išjungia placeholder'ius
 
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'display_genre')
+    list_display = ('title', 'author', 'display_genre', 'cover')
     inlines = [BooksInstanceInline]
 
 class BookInstanceAdmin(admin.ModelAdmin):

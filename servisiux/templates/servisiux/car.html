@@ -1,12 +1,18 @@
 {% extends "servisiux/base.html" %}
-
+{% block title %}<title>Service | Car</title>{% endblock %}
 {% block content %}
 <section class="resume-section" id="skills">
   <div class="resume-section-content">
     <h2 class="mb-5">{{car.model_id}}</h2>
-    <div class="subheading mb-3">Driver: {{ car.owner }}</div>
-    <div class="subheading mb-3">License plate: {{ car.plate }}</div>
+    <img src="{{ car.cover.url }}" class="img-fluid">
+    <div class="subheading mb-3">Driver: {{ car.owner }} / License plate: {{ car.plate }}</div>
     <div class="subheading mb-3">VIN: {{ car.vin }}</div>
+    <ul>
+      {% for order in car.carorder.all %}
+        <li><a href="{% url 'order-detail' order.id %}">{{ order.date }}</a> {{ order.get_status_display}}</li>
+      {% endfor %}
+      <li>{{ car.car_suma }}</li>
+  </ul>
   </div>
 </section>
 {% endblock %}
