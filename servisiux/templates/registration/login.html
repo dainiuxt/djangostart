@@ -1,0 +1,34 @@
+{% extends "servisiux/base.html" %}
+{% block title %}<title>Login</title>{% endblock %}
+{% block content %}
+<section class="resume-section" id="login">
+  {% if form.errors %}
+    <p>Prisijungimo klaida, bandykite dar kartą!</p>
+  {% endif %}
+  
+  {% if next %}
+    {% if user.is_authenticated %}
+      <p>Neturite prieigos prie šios informacijos. Turite prisijungti.</p>
+    {% endif %}
+  {% endif %}
+  <div class="d-block">
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <table>
+        <tr>
+          <td>Vartotojas: </td>
+          <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+          <td>Slaptažodis: </td>
+          <td>{{ form.password }}</td>
+        </tr>
+      </table>
+      <input type="submit" value="Prisijungti" />
+      <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+  </div>
+  <div class="d-block"><a href="{% url 'password_reset' %}">Pamiršote slaptažodį?</a>
+  </div>
+</section>
+{% endblock %}

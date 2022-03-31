@@ -7,6 +7,7 @@
     <img src="{{ car.cover.url }}" class="img-fluid">
     <div class="subheading mb-3">Driver: {{ car.owner }} / License plate: {{ car.plate }}</div>
     <div class="subheading mb-3">VIN: {{ car.vin }}</div>
+    <div>{{ car.description | safe }} </div>
     <ul>
       {% for order in car.carorder.all %}
         <li><a href="{% url 'order-detail' order.id %}">{{ order.date }}</a> {{ order.get_status_display}}</li>

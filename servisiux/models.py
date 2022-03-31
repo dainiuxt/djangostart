@@ -1,4 +1,11 @@
+from datetime import date, datetime
+
+import pytz
+from django.contrib.auth.models import User
 from django.db import models
+from tinymce.models import HTMLField
+
+utc=pytz.UTC
 
 # Create your models here.
 
@@ -20,6 +27,7 @@ class Car(models.Model):
   vin = models.CharField('VIN number', max_length=200)
   owner = models.CharField('Owner name, surname', max_length=200)
   cover = models.ImageField('Carpic', upload_to='service/cars', null=True)
+  description = HTMLField()
 
   @property
   def car_suma(self):
@@ -40,6 +48,9 @@ class Car(models.Model):
 class Order(models.Model):
   date = models.DateField('Date', null=True, blank=True)
   car_instance_id = models.ForeignKey('Car', on_delete=models.SET_NULL, null=True, related_name='carorder')
+  user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+  due_date = models.DateField('Due date', null=True, blank=True)
+
 #   link = models.CharField('link', max_length=50, default='Open order')
 
   @property
@@ -49,6 +60,12 @@ class Order(models.Model):
       for row in order_rows:
           recipe += row.quantity * row.service_id.price
       return recipe
+
+  @property
+  def is_overdue(self):
+    if self.due_date and date.today() > self.due_date:
+        return True
+    return False
 
   def __str__(self):
       return f'{self.car_instance_id}'
@@ -75,7 +92,6 @@ class Order(models.Model):
     default='e',
     help_text='Status',
     )
-
 
 class OrderRow(models.Model):
   service_id = models.ForeignKey('Service', on_delete=models.SET_NULL, null=True)
@@ -104,4 +120,6 @@ class Service(models.Model):
 
   class Meta:
       verbose_name = 'Service'
-      verbose_name_plural = 'Services'      
+      verbose_name_plural = 'Services'
+
+ 

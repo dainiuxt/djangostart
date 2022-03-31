@@ -27,6 +27,16 @@ class OrderAdmin(admin.ModelAdmin):
   list_display_links = ('date',)
   inlines = [OrderRowInline]
 
+  fieldsets = (
+    ('Order', {
+      'fields': ('date', 'car_instance_id', 'status',) 
+    }),
+    ('User', {
+      'fields': ('user', 'due_date',)
+    }),
+  )
+
+
 class CarModelAdmin(admin.ModelAdmin):
   list_display = ('make', 'model')
 

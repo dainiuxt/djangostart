@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 def index(request):
@@ -58,3 +59,11 @@ def search(request):
     query = request.GET.get('query')
     search_results = Car.objects.filter(Q(model_id__make__icontains=query) | Q(owner__icontains=query))
     return render(request, 'servisiux/search.html', {'cars': search_results, 'query': query})
+
+class UserOrdersListView(LoginRequiredMixin, generic.ListView):
+    model = Order
+    template_name ='servisiux/user_orders.html'
+    paginate_by = 10
+    
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).order_by('due_date')
