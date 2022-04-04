@@ -8,14 +8,39 @@
     <div class="subheading mb-3">Order date: {{ order.date }}</div>
     <div class="subheading mb-3">Status: {{ order.get_status_display }}</div>
   </div>
-  <ul>
-    {% for row in order.orderrow_set.all %}
-    <li>
-        {{ row.quantity }} {{ row.service_id.service }}, {{ row.service_id.price }}
-    </li>
+  <div class="resume-section-content">
+    <ul>
+      {% for row in order.orderrow_set.all %}
+      <li>
+          {{ row.quantity }} {{ row.service_id.service }}, {{ row.service_id.price }}
+      </li>
+      {% endfor %}
+      <li>Total €: {{ order.suma }}</li>
+    </ul>
+  </div>
+  <div class="resume-section-content">
+  </br>
+  <h4>Reviews:</h4>
+  {% if order.orderreview_set.all %}
+    {% for review in order.orderreview_set.all %}
+      <hr>
+      <strong>{{ review.reviewer }}</strong>, <em>{{ review.date_created}}</em>
+      <p>{{ review.content }}</p>
     {% endfor %}
-    <li>Total €: {{ order.suma }}</li>
-  </ul>
-
+  {% else %}
+    <p>You have no reviews.</p>
+  {% endif %}
+  {% if user.is_authenticated %}
+  <div class="fieldWrapper">
+    <hr><br/>
+    <h4>Write your review:</h4>
+    <form action="" method="post">
+      {% csrf_token %}
+      {{ form.content }}</br>
+      <input type="submit" value="Post">
+    </form>
+  </div>
+  {% endif %}
+  </div>
 </section>
 {% endblock %}

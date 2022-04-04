@@ -16,11 +16,11 @@
       {% csrf_token %}
       <table>
         <tr>
-          <td>Vartotojas: </td>
+          <td>Username: </td>
           <td>{{ form.username }}</td>
         </tr>
         <tr>
-          <td>Slaptažodis: </td>
+          <td>Password: </td>
           <td>{{ form.password }}</td>
         </tr>
       </table>
@@ -28,7 +28,7 @@
       <input type="hidden" name="next" value="{{ next }}" />
     </form>
   </div>
-  <div class="d-block"><a href="{% url 'password_reset' %}">Pamiršote slaptažodį?</a>
+  <div class="d-block"><a href="{% url 'password_reset' %}">Forgot password?</a>
   </div>
 </section>
 {% endblock %}

@@ -1,9 +1,9 @@
 from datetime import date, datetime
-
 import pytz
 from django.contrib.auth.models import User
 from django.db import models
 from tinymce.models import HTMLField
+from PIL import Image
 
 utc=pytz.UTC
 
@@ -122,4 +122,24 @@ class Service(models.Model):
       verbose_name = 'Service'
       verbose_name_plural = 'Services'
 
- 
+class OrderReview(models.Model):
+    order = models.ForeignKey('Order', on_delete=models.SET_NULL, null=True, blank=True)
+    reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    content = models.TextField('Review', max_length=2000)
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    picture = models.ImageField(default="default.png", upload_to="profile_pics")
+
+    def __str__(self):
+        return f"{self.user.username} profile"
+
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        img = Image.open(self.picture.path)
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.picture.path)        

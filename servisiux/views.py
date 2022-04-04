@@ -1,10 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, reverse, redirect
 from .models import CarModel, Car, Order, OrderRow, Service
-from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import User
+from django.views.decorators.csrf import csrf_protect
+from django.contrib import messages
+from .forms import OrderReviewForm, UserUpdateForm, ProfileUpdateForm
+from django.views.generic.edit import FormMixin
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
@@ -45,9 +50,35 @@ class OrderListView(generic.ListView):
     paginate_by = 5
     template_name = 'servisiux/order_list.html'
 
-class OrderDetailView(generic.DetailView):
+class OrderDetailView(FormMixin, generic.DetailView):
     model = Order
     template_name = 'servisiux/order_detail.html'
+    form_class = OrderReviewForm
+
+    class Meta:
+        ordering = ['title']
+
+    def get_success_url(self):
+        return reverse('order-detail', kwargs={'pk': self.object.id})
+
+    def get_context_data(self, *args, **kwargs):
+       context = super(OrderDetailView, self).get_context_data(**kwargs)
+       context['form'] = OrderReviewForm(initial={'order': self.object})
+       return context   
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.instance.order = self.object
+        form.instance.reviewer = self.request.user
+        form.save()
+        return super(OrderDetailView, self).form_valid(form)
 
 def search(request):
     """
@@ -67,3 +98,50 @@ class UserOrdersListView(LoginRequiredMixin, generic.ListView):
     
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user).order_by('due_date')
+
+@csrf_protect
+def register(request):
+    if request.method == "POST":
+        # pasiimame reikšmes iš registracijos formos
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        password2 = request.POST['password2']
+        # tikriname, ar sutampa slaptažodžiai
+        if password == password2:
+            # tikriname, ar neužimtas username
+            if User.objects.filter(username=username).exists():
+                messages.error(request, f'Vartotojo vardas {username} užimtas!')
+                return redirect('register')
+            else:
+                # tikriname, ar nėra tokio pat email
+                if User.objects.filter(email=email).exists():
+                    messages.error(request, f'Vartotojas su el. paštu {email} jau užregistruotas!')
+                    return redirect('register')
+                else:
+                    # jeigu viskas tvarkoje, sukuriame naują vartotoją
+                    User.objects.create_user(username=username, email=email, password=password)
+        else:
+            messages.error(request, 'Slaptažodžiai nesutampa!')
+            return redirect('register')
+    return render(request, 'registration/register.html')
+
+@login_required
+def profile(request):
+    if request.method == "POST":
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f"Profile updated")
+            return redirect('servisiux/profile')
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
+    context = {
+        'u_form': u_form,
+        'p_form': p_form,
+    }    
+    return render(request, 'servisiux/profile.html', context)

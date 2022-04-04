@@ -5,8 +5,10 @@
   <div class="resume-section-content">
     <h2 class="mb-5">My orders</h2>
     {% if order_list %}
+    <img class="rounded-circle" src="{{user.profile.picture.url}}">
     <ul class="fa-ul mb-0">
       {% for order in order_list %}
+      <!-- <img class="rounded-circle" src="{{order.user.profile.picture.url}}"> -->
         <li class="{% if order.is_overdue %}text-danger{% endif %}">
           <span class="fa-li"><i class="fas fa-check"></i></span>
             Status info: {{ order.date }}, {{ order.car_instance_id }} <a href="{% url 'order-detail' order.id %}">{{ order.get_status_display}}</a> 

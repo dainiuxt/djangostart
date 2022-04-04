@@ -1,0 +1,33 @@
+{% extends "servisiux/base.html" %}
+{% block title %}<title>Service | Car</title>{% endblock %}
+{% block content %}
+<section class="resume-section" id="skills">
+  <div class="resume-section-content">
+    <h3>Registration</h3><br/>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">User name</label>
+            <input name="username" type="text" class="form-control" id="username" aria-describedby="usernameHelp">
+            <small id="usernameHelp" class="form-text text-muted">Up to 150 characters.</small>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">E-mail</label>
+            <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <small id="emailHelp" class="form-text text-muted">Needed to remind you a password.</small>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input name="password" type="password" class="form-control" id="password" aria-describedby="pwdHelp">
+            <small id="pwdHelp" class="form-text text-muted">At least 8 characters, should be alphanumeric.</small>
+        </div>
+        <div class="form-group">
+            <label for="password2">Repeat your password</label>
+            <input name="password2" type="password" class="form-control" id="password2" aria-describedby="pwd2Help">
+        </div>
+        <button type="submit" class="btn btn-primary register-button">Register</button>
+    </form>
+    <p><a href="{% url 'login'%}?next={{request.path}}"><strong>Login</strong></a> if you already registered.</p>
+  </div>
+</section>
+{% endblock %}
