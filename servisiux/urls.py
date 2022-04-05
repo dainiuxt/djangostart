@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
@@ -13,4 +13,5 @@ urlpatterns = [
     path('myorders/', views.UserOrdersListView.as_view(), name='my-orders'),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='servisiux/profile'),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]

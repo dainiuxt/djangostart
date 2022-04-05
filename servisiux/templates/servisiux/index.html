@@ -1,11 +1,11 @@
 {% extends "servisiux/base.html" %}
-
+{% load i18n %}
 {% block content %}
 <section class="resume-section" id="about">
   <div class="resume-section-content">
     <h1 class="mb-0">
-      Old Cars
-        <span class="text-primary">Service</span>
+      {% trans "Old Cars" %}
+        <span class="text-primary">{% trans "Service" %}</span>
     </h1>
     <div class="subheading mb-5">
       Caring service for nice cars

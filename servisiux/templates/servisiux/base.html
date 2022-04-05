@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <meta name="description" content="" />
   <meta name="author" content="" />
-  {% block title %}<title>Car Service</title>{% endblock %}
+  {% block title %}<title>{% trans "Car Service" %}</title>{% endblock %}
   <link rel="icon" type="image/x-icon" href="{% static 'img/car.ico' %}" />
   <!-- Font Awesome icons (free version)-->
   <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
@@ -46,6 +47,23 @@
               <form action="{% url 'servisiux/search' %}" method="get" class="form-inline w-75 mx-auto mt-4">
               <input name="query" class="form-control" type="text" placeholder="Search">
               </form>
+          </li>
+          <li>
+            
+            <form action="{% url 'set_language' %}" method="post">
+              {% csrf_token %}
+              <input name="next" type="hidden" value="{{ redirect_to }}"/>
+              <select name="language" onchange="this.form.submit()">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% for lang in LANGUAGES %}
+                <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %} selected="selected" {% endif %}>
+                  {{ lang.1 }}
+                </option>
+                {% endfor %}
+              </select>
+              <!-- <input type="submit" value="Go"/> -->
+            </form>
           </li>
         </ul>
     </div>

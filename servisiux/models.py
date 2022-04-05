@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from tinymce.models import HTMLField
 from PIL import Image
+from django.utils.translation import gettext_lazy as _
 
 utc=pytz.UTC
 
