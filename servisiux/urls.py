@@ -14,4 +14,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='servisiux/profile'),
     path('i18n/', include('django.conf.urls.i18n')),
+    path('userorders/', views.UserOrders.as_view(), name='user-orders'),
+    path('userorders/<int:pk>', views.UserOrdersDetail.as_view(), name='user-order'),
+    path('userorders/new', views.UserOrderCreateView.as_view(), name='user-orders-new'),
 ]

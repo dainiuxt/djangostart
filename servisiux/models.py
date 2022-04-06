@@ -5,6 +5,7 @@ from django.db import models
 from tinymce.models import HTMLField
 from PIL import Image
 from django.utils.translation import gettext_lazy as _
+from django.shortcuts import reverse
 
 utc=pytz.UTC
 
@@ -26,7 +27,8 @@ class Car(models.Model):
   plate = models.CharField('License plate', max_length=200)
   model_id = models.ForeignKey('Carmodel', on_delete=models.SET_NULL, null=True, related_name="carmodel")
   vin = models.CharField('VIN number', max_length=200)
-  owner = models.CharField('Owner name, surname', max_length=200)
+  own_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+#   owner = models.CharField('Owner name, surname', max_length=200)
   cover = models.ImageField('Carpic', upload_to='service/cars', null=True)
   description = HTMLField()
 
@@ -45,7 +47,6 @@ class Car(models.Model):
       verbose_name = 'Car'
       verbose_name_plural = 'Cars'
 
-
 class Order(models.Model):
   date = models.DateField('Date', null=True, blank=True)
   car_instance_id = models.ForeignKey('Car', on_delete=models.SET_NULL, null=True, related_name='carorder')
@@ -53,6 +54,8 @@ class Order(models.Model):
   due_date = models.DateField('Due date', null=True, blank=True)
 
 #   link = models.CharField('link', max_length=50, default='Open order')
+  def get_absolute_url(self):
+    return reverse('user-order', args=[str(self.id)])
 
   @property
   def suma(self):

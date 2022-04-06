@@ -1,15 +1,22 @@
 from django.shortcuts import render, get_object_or_404, reverse, redirect
 from .models import CarModel, Car, Order, OrderRow, Service
-from django.views import generic
+from django.views.generic import (
+                                ListView,
+                                DetailView,
+                                DeleteView,
+                                CreateView,
+                                UpdateView,
+                                )
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import User
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from .forms import OrderReviewForm, UserUpdateForm, ProfileUpdateForm
+from .forms import OrderForm, OrderReviewForm, UserUpdateForm, ProfileUpdateForm
 from django.views.generic.edit import FormMixin
 from django.contrib.auth.decorators import login_required
+from datetime import date
 
 # Create your views here.
 def index(request):
@@ -45,12 +52,12 @@ def car(request, car_id):
     # car_orders = Order.objects.get()
     return render(request, 'servisiux/car.html', {'car': single_car})
 
-class OrderListView(generic.ListView):
+class OrderListView(ListView):
     model = Order
     paginate_by = 5
     template_name = 'servisiux/order_list.html'
 
-class OrderDetailView(FormMixin, generic.DetailView):
+class OrderDetailView(FormMixin, DetailView):
     model = Order
     template_name = 'servisiux/order_detail.html'
     form_class = OrderReviewForm
@@ -91,7 +98,7 @@ def search(request):
     search_results = Car.objects.filter(Q(model_id__make__icontains=query) | Q(owner__icontains=query))
     return render(request, 'servisiux/search.html', {'cars': search_results, 'query': query})
 
-class UserOrdersListView(LoginRequiredMixin, generic.ListView):
+class UserOrdersListView(LoginRequiredMixin, ListView):
     model = Order
     template_name ='servisiux/user_orders.html'
     paginate_by = 10
@@ -145,3 +152,33 @@ def profile(request):
         'p_form': p_form,
     }    
     return render(request, 'servisiux/profile.html', context)
+
+class UserOrders(LoginRequiredMixin, ListView):
+    model = Order
+    context_object_name = 'orders'
+    template_name = 'servisiux/my_orders.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).order_by('due_date')
+
+class UserOrdersDetail(LoginRequiredMixin, DetailView):
+    model = Order
+    template_name = 'servisiux/my_order.html'
+
+class UserOrderCreateView(LoginRequiredMixin, CreateView):
+    model = Order
+    form_class = OrderForm
+
+    success_url = "/servisiux/userorders/"
+    template_name = 'servisiux/my_order_new.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.date = date.today()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'].fields['car_instance_id'].queryset = Car.objects.filter(own_id=self.request.user)
+        return context

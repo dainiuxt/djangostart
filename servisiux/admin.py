@@ -41,9 +41,9 @@ class CarModelAdmin(admin.ModelAdmin):
   list_display = ('make', 'model')
 
 class CarAdmin(admin.ModelAdmin):
-  list_display = ('model_id', 'plate', 'vin', 'owner', 'cover')
+  list_display = ('model_id', 'plate', 'vin', 'own_id', 'cover')
   search_fields = ('vin', 'model_id__make')  
-  list_filter = ('owner', 'model_id__make')
+  list_filter = ('own_id', 'model_id__make')
   inlines = [OrderInline]
   
 

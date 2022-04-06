@@ -5,7 +5,7 @@
   <div class="resume-section-content">
     <h2 class="mb-5">{{car.model_id}}</h2>
     <img src="{{ car.cover.url }}" class="img-fluid">
-    <div class="subheading mb-3">Driver: {{ car.owner }} / License plate: {{ car.plate }}</div>
+    <div class="subheading mb-3">Driver: {{ car.own_id_id }} / License plate: {{ car.plate }}</div>
     <div class="subheading mb-3">VIN: {{ car.vin }}</div>
     <div>{{ car.description | safe }} </div>
     <ul>

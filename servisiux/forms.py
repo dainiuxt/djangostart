@@ -1,4 +1,4 @@
-from .models import OrderReview, Profile
+from .models import OrderReview, Profile, Order
 from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
@@ -22,3 +22,17 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['picture']
+
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        # fields = fields = '__all__'
+        fields = ['car_instance_id', 'due_date']
+        widgets = {
+            'due_date': DateInput(), 'user': forms.HiddenInput(), 'date': forms.HiddenInput()}
+            
