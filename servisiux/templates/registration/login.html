@@ -3,12 +3,12 @@
 {% block content %}
 <section class="resume-section" id="login">
   {% if form.errors %}
-    <p>Prisijungimo klaida, bandykite dar kartą!</p>
+    <p>Login error. Try again.</p>
   {% endif %}
   
   {% if next %}
     {% if user.is_authenticated %}
-      <p>Neturite prieigos prie šios informacijos. Turite prisijungti.</p>
+      <p>Only loggedin users can access this information.</p>
     {% endif %}
   {% endif %}
   <div class="d-block">

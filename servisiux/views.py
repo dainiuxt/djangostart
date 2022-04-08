@@ -162,9 +162,37 @@ class UserOrders(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user).order_by('due_date')
 
-class UserOrdersDetail(LoginRequiredMixin, DetailView):
+class UserOrdersDetail(LoginRequiredMixin, DetailView, FormMixin):
     model = Order
     template_name = 'servisiux/my_order.html'
+
+    form_class = OrderReviewForm
+
+    class Meta:
+        ordering = ['title']
+
+    def get_success_url(self):
+        return reverse('user-order', kwargs={'pk': self.object.id})
+
+    def get_context_data(self, *args, **kwargs):
+       context = super(UserOrdersDetail, self).get_context_data(**kwargs)
+       context['form'] = OrderReviewForm(initial={'order': self.object})
+       return context   
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.instance.order = self.object
+        form.instance.reviewer = self.request.user
+        form.save()
+        return super(UserOrdersDetail, self).form_valid(form)
+
 
 class UserOrderCreateView(LoginRequiredMixin, CreateView):
     model = Order

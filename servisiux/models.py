@@ -99,15 +99,11 @@ class Order(models.Model):
 
 class OrderRow(models.Model):
   service_id = models.ForeignKey('Service', on_delete=models.SET_NULL, null=True)
-  order = models.ForeignKey('Order', on_delete=models.SET_NULL, null=True)
+  order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
   quantity = models.IntegerField('Quantity')
-  # price = models.ManyToManyField('Service', max_length=200)
 
   def __str__(self):
       return f'{self.order_id}, {self.quantity}'
-
-  # def service_data(service_id):
-  #     return Service.objects.get(service_id)
 
   class Meta:
       verbose_name = 'Row'
@@ -127,8 +123,8 @@ class Service(models.Model):
       verbose_name_plural = 'Services'
 
 class OrderReview(models.Model):
-    order = models.ForeignKey('Order', on_delete=models.SET_NULL, null=True, blank=True)
-    reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, null=True, blank=True)
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     content = models.TextField('Review', max_length=2000)
 

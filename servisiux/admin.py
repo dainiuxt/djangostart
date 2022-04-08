@@ -51,7 +51,7 @@ class ServiceAdmin(admin.ModelAdmin):
   list_display = ('service', 'price')
 
 class OrderReviewAdmin(admin.ModelAdmin):
-  list_display = ('order', 'date_created', 'reviewer', 'content')
+  list_display = ('order_id', 'order', 'date_created', 'reviewer', 'content')
 
 admin.site.register(OrderReview, OrderReviewAdmin)
 admin.site.register(CarModel, CarModelAdmin)
