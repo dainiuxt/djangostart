@@ -204,3 +204,12 @@ class UserOrderUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         order = self.get_object()
         return self.request.user == order.user
 
+
+class UserOrderDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Order
+    success_url = "/servisiux/userorders/"
+    template_name = 'servisiux/my_order_delete.html'
+
+    def test_func(self):
+        order = self.get_object()
+        return self.request.user == order.user
