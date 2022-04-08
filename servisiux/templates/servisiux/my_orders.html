@@ -14,6 +14,7 @@
             Status info: {{ order.date }}, {{ order.car_instance_id }} <a href="{% url 'order-detail' order.id %}">{{ order.get_status_display}}</a>
             <br/>
             <a class="btn btn-primary" href="{{ order.pk }}" role="button">View</a>
+            <a class="btn btn-secondary" href="{% url 'user-order-update' order.id %}">Edit</a>
         </li>
       {% endfor %}
     </ul>

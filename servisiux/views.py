@@ -9,7 +9,7 @@ from django.views.generic import (
                                 )
 from django.db.models import Q
 from django.core.paginator import Paginator
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import User
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
@@ -182,3 +182,25 @@ class UserOrderCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['form'].fields['car_instance_id'].queryset = Car.objects.filter(own_id=self.request.user)
         return context
+
+
+class UserOrderUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Order
+    form_class = OrderForm
+
+    success_url = "/servisiux/userorders/"
+    template_name = 'servisiux/my_order_new.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.date = date.today()
+        return super().form_valid(form)
+
+    def form_valid(self, form):
+        form.instance.reader = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        order = self.get_object()
+        return self.request.user == order.user
+
