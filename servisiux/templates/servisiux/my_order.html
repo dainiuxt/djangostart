@@ -10,6 +10,8 @@
     <div class="subheading mb-3">Status: {{ order.get_status_display }}</div>
   </div>
   <div class="resume-section-content">
+    <a class="btn btn-primary" href="{{ order.id }}/newrow" role="button">New service</a>
+    {% if order.orderrow_set.all %}
     <ul>
       {% for row in order.orderrow_set.all %}
       <li>
@@ -18,6 +20,7 @@
       {% endfor %}
       <li>Total €: {{ order.suma }}</li>
     </ul>
+    {% endif %}
   </div>
   <div class="resume-section-content">
   </br>

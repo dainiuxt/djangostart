@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import User
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from .forms import OrderForm, OrderReviewForm, UserUpdateForm, ProfileUpdateForm
+from .forms import OrderForm, OrderReviewForm, UserUpdateForm, ProfileUpdateForm, RowForm
 from django.views.generic.edit import FormMixin
 from django.contrib.auth.decorators import login_required
 from datetime import date
@@ -73,7 +73,7 @@ class OrderDetailView(FormMixin, DetailView):
        context['form'] = OrderReviewForm(initial={'order': self.object})
        return context   
 
-    def post(self, request, *args, **kwargs):
+    def post(self, **kwargs):
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
@@ -168,6 +168,7 @@ class UserOrdersDetail(LoginRequiredMixin, DetailView, FormMixin):
 
     form_class = OrderReviewForm
 
+
     class Meta:
         ordering = ['title']
 
@@ -224,10 +225,6 @@ class UserOrderUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         form.instance.date = date.today()
         return super().form_valid(form)
 
-    def form_valid(self, form):
-        form.instance.reader = self.request.user
-        return super().form_valid(form)
-
     def test_func(self):
         order = self.get_object()
         return self.request.user == order.user
@@ -241,3 +238,24 @@ class UserOrderDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         order = self.get_object()
         return self.request.user == order.user
+
+
+class OrderRowCreateView(LoginRequiredMixin, CreateView):
+    model = OrderRow
+    form_class = RowForm
+    success_url = "/servisiux/userorders/"
+    template_name = 'servisiux/order_row_new.html'
+
+    # def get_success_url(order):
+    #     return reverse('user-order', kwargs={'pk': order.id})
+
+
+    def form_valid(self, form):
+        # form.instance.orderrow = self.request.orderrow
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        order = self.object
+        context = super().get_context_data(**kwargs)
+        # context['form'].fields['car_instance_id'].queryset = Car.objects.filter(own_id=self.request.user)
+        return context

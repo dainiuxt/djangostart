@@ -1,4 +1,4 @@
-from .models import OrderReview, Profile, Order
+from .models import OrderReview, OrderRow, Profile, Order
 from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
@@ -35,4 +35,12 @@ class OrderForm(forms.ModelForm):
         fields = ['car_instance_id', 'due_date']
         widgets = {
             'due_date': DateInput(), 'user': forms.HiddenInput(), 'date': forms.HiddenInput()}
-            
+
+
+class RowForm(forms.ModelForm):
+    class Meta:
+        model = OrderRow
+        fields = ['service_id', 'quantity']
+        widgets = {
+            'order': forms.HiddenInput()}
+           
